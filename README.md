@@ -82,7 +82,7 @@ taskflow-todo-app/
 
 ## 📸 Preview
 
-<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/836bccda-c711-421f-bae8-e3b937a0ebb7" />
+<img width="1920" height="1020" alt="image" src="https://github.com/user-attachments/assets/ffd8ec13-5147-4f02-9456-6be3312ffa0c" />
 
 
 ---
