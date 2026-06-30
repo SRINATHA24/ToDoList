@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskFlow — To-Do App</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">TaskFlow</span>
+      </div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+        <span class="theme-icon">☾</span>
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <p class="nav-label">Views</p>
+      <button class="nav-item active" data-filter="all">
+        <span class="nav-icon">◈</span> All Tasks
+        <span class="nav-badge" id="badge-all">0</span>
+      </button>
+      <button class="nav-item" data-filter="today">
+        <span class="nav-icon">◉</span> Today
+        <span class="nav-badge" id="badge-today">0</span>
+      </button>
+      <button class="nav-item" data-filter="upcoming">
+        <span class="nav-icon">◎</span> Upcoming
+        <span class="nav-badge" id="badge-upcoming">0</span>
+      </button>
+      <button class="nav-item" data-filter="overdue">
+        <span class="nav-icon">⚠</span> Overdue
+        <span class="nav-badge danger" id="badge-overdue">0</span>
+      </button>
+      <button class="nav-item" data-filter="completed">
+        <span class="nav-icon">✔</span> Completed
+        <span class="nav-badge" id="badge-completed">0</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-section">
+      <p class="nav-label">Categories</p>
+      <div class="category-list" id="categoryList"></div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="stats-card">
+        <div class="stat">
+          <span class="stat-num" id="statTotal">0</span>
+          <span class="stat-lbl">Total</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num green" id="statDone">0</span>
+          <span class="stat-lbl">Done</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num amber" id="statPending">0</span>
+          <span class="stat-lbl">Pending</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle">☰</button>
+        <div class="topbar-title" id="topbarTitle">All Tasks</div>
+      </div>
+      <div class="topbar-right">
+        <div class="search-wrap">
+          <span class="search-icon">⌕</span>
+          <input type="text" id="searchInput" placeholder="Search tasks…" autocomplete="off" />
+          <button class="search-clear hidden" id="searchClear">✕</button>
+        </div>
+        <div class="sort-wrap">
+          <select id="sortSelect">
+            <option value="created">Newest</option>
+            <option value="due">Due Date</option>
+            <option value="priority">Priority</option>
+            <option value="alpha">A → Z</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Task List Area -->
+    <section class="task-area">
+      <div class="task-list" id="taskList"></div>
+      <div class="empty-state hidden" id="emptyState">
+        <div class="empty-icon">✦</div>
+        <p class="empty-title">Nothing here yet</p>
+        <p class="empty-sub">Hit the button below to add your first task.</p>
+      </div>
+    </section>
+
+    <!-- FAB -->
+    <button class="fab" id="fabBtn" title="Add Task">+</button>
+  </main>
+
+  <!-- ── MODAL: Add / Edit Task ── -->
+  <div class="modal-overlay hidden" id="modalOverlay">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">New Task</h2>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Title -->
+        <div class="field">
+          <label class="field-label" for="taskTitle">Task Title <span class="req">*</span></label>
+          <input type="text" id="taskTitle" class="field-input" placeholder="What needs to be done?" maxlength="120" />
+          <span class="char-count" id="charCount">0 / 120</span>
+        </div>
+
+        <!-- Notes -->
+        <div class="field">
+          <label class="field-label" for="taskNotes">Notes</label>
+          <textarea id="taskNotes" class="field-input" placeholder="Add some details…" rows="3" maxlength="400"></textarea>
+        </div>
+
+        <!-- Row: Priority + Category -->
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Priority</label>
+            <div class="priority-group" id="priorityGroup">
+              <button class="priority-btn" data-value="low">Low</button>
+              <button class="priority-btn active" data-value="medium">Medium</button>
+              <button class="priority-btn" data-value="high">High</button>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="taskCategory">Category</label>
+            <select id="taskCategory" class="field-input">
+              <option value="General">General</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Health">Health</option>
+              <option value="Study">Study</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Due Date -->
+        <div class="field">
+          <label class="field-label" for="taskDue">Due Date</label>
+          <input type="date" id="taskDue" class="field-input" />
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-ghost" id="modalCancel">Cancel</button>
+        <button class="btn-primary" id="modalSave">Add Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ── MOBILE OVERLAY ── -->
+  <div class="sidebar-overlay hidden" id="sidebarOverlay"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
